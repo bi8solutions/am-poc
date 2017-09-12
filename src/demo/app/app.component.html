@@ -1,0 +1,15 @@
+<div>
+  <h2>Template Examples</h2>
+
+  <button (click)="addColumn()">Add</button>
+  <button (click)="insertColumn(1)">Insert (1)</button>
+  <button (click)="removeColumn(0)">Remove (0)</button>
+  <hr/>
+
+  <grid [model]="gridModel">
+    <ng-template #firstNameHeaderTemplate let-column="column">First Name  - {{column.config.key}} :) dddfdf</ng-template>
+  </grid>
+
+  <!--<nested></nested>-->
+  <!--<template-example></template-example>-->
+</div>

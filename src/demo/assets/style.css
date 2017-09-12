@@ -1,0 +1,88 @@
+
+.close-icon {
+  padding-top: 5px;
+  cursor: pointer;
+}
+
+.form-array-content {
+  background-color: rgba(221, 221, 221, 0.23);;
+  border-radius: 8px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+}
+
+.siteHeaderTitle {
+  font-size: 18px;
+  font-weight: bold;
+  padding: 5px;
+}
+
+body .mat-select-placeholder.mat-floating-placeholder {
+  top: -18px !important;
+  left: 0 !important;
+}
+
+body .mat-select-trigger {
+  height: 22px;
+  margin: 1em 0;
+  padding-bottom: 15px;
+}
+
+/*
+body .mat-select-trigger {
+  height: 22px;
+  margin: -4em 0;
+  padding-bottom: 8px;
+}*/
+
+
+
+.loginBackdrop {
+  background-color: gainsboro;
+  opacity: 1 !important;
+}
+
+
+html, body {
+  box-sizing: border-box;
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+h1 {
+  color: #369;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 250%;
+}
+
+.title {
+    margin-bottom: 30px;
+}
+
+.card {
+    margin-bottom: 20px;
+}
+
+label {
+    margin-bottom: 5px;
+}
+
+p {
+    margin: 10px 0 20px 0;
+}
+
+
+body .mat-select-placeholder.mat-floating-placeholder {
+  top: -18px !important;
+  left: 0 !important;
+}
+
+body .mat-select-trigger {
+  height: 22px;
+  margin: 1em 0;
+  padding-bottom: 15px;
+}
+
