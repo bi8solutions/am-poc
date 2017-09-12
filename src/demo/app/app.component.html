@@ -10,8 +10,24 @@
   <button (click)="removeRow(0)">Remove Row (0)</button>
   <hr/>
 
+  <div class="am-grid">
+    <div class="am-data-row">
+      <div class="am-data-cell">col1</div>
+      <div class="am-data-cell">col2</div>
+      <div class="am-data-cell">col3</div>
+      <div class="am-data-cell">col4</div>
+      <div class="am-data-cell">col5</div>
+      <div class="am-data-cell">col6</div>
+    </div>
+    <div class="am-data-row">
+      <div class="am-data-cell">Blaf sljnsjhd sjdhsl jdhjskdh sjkdh skjdh sjkldhs lkdklsd klsjd klsjd klsjdlk sdlksjd lksjd lksjd lskdj slkj slkd</div>
+    </div>
+  </div>
+  <hr/>
+
   <grid [model]="gridModel" [dataSource]="arrayDS">
     <ng-template #firstNameHeaderTemplate let-column="column"> (: First Name  - {{column.config.key}} :) </ng-template>
+    <ng-template #alternativeFirstNameHeaderTemplate let-column="column"> Skuus, Pasop, Vockoff {{column.config.key}}</ng-template>
     <ng-template #firstNameDataTemplate let-column="column" let-row="row">{{row.data.firstName}} - {{message}} - {{row.data.insertedColumn}}</ng-template>
 
     <ng-template #expanderTemplate let-column="column" let-row="row">
@@ -23,7 +39,7 @@
       </table>
     </ng-template>
     <!--
-    1) Expander
+    1) Expander -> most important
     2) Selector (make row selectable)
     3) Sorting
     4) Filtering

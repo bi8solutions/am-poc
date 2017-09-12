@@ -36,6 +36,7 @@ import {
   HeaderRowOutlet,
   DataRowOutlet,
   RowOutlet,
+  ExpanderOutlet,
   HeaderRowDef,
   HeaderRow,
   HeaderCellDef,
@@ -84,6 +85,7 @@ import {GridService} from "./poc/grid.service";
       HeaderRowOutlet,
       DataRowOutlet,
       RowOutlet,
+      ExpanderOutlet,
 
       DataRowDef,
       DataRow,
@@ -128,6 +130,7 @@ import {GridService} from "./poc/grid.service";
       HeaderRowOutlet,
       DataRowOutlet,
       RowOutlet,
+      ExpanderOutlet,
       CellOutlet,
 
       NestedPlaceholder,

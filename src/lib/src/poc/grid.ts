@@ -44,6 +44,11 @@ export class RowOutlet  {
   constructor(public viewContainer: ViewContainerRef){}
 }
 
+@Directive({selector: '[expanderOutlet]'})
+export class ExpanderOutlet  {
+  constructor(public viewContainer: ViewContainerRef){}
+}
+
 @Directive({selector: '[cellOutlet]'})
 export class CellOutlet  {
   constructor(public viewContainer: ViewContainerRef){}
@@ -177,6 +182,10 @@ export class HeaderRow implements AfterContentInit {
     this._rowOutlet.viewContainer.createEmbeddedView(this._headerCellDef.templateRef, {$implicit: column}, index);
   }
 
+  clearCells(){
+    this._rowOutlet.viewContainer.clear();
+  }
+
   /**
    * Iterate the changes and apply add/remove/insert operations to the collection of header cells (columns)
    * @todo - can still do the TODO one for moving a column (look at material2 data table sort for an example
@@ -190,13 +199,13 @@ export class HeaderRow implements AfterContentInit {
 
     // add, insert
     changes.forEachAddedItem((record: IterableChangeRecord<GridColumn>)=>{
-       /////////////console.log("adding/inserting new cell for new column", record);
+       //console.log("adding/inserting new cell for new column", record);
        this.renderHeaderCell(record.item, record.currentIndex);
     });
 
     // remove
     changes.forEachRemovedItem((record: IterableChangeRecord<GridColumn>)=>{
-      /////////////console.log("removing existing cell", record);
+      //console.log("removing existing cell", record);
       this._rowOutlet.viewContainer.remove(record.previousIndex);
     });
 
@@ -312,7 +321,56 @@ export class DataCell implements OnInit, AfterContentInit {
   selector: 'data-row',
   inputs: ['row: row'],
   template: `
-    <ng-container rowOutlet></ng-container>
+    <!-- 
+         
+    Expander Status - show/hide/disable (also with a tooltip)
+    Expander Type - Chevron (expand/contract), Slider (slide-in/slide-out)   
+    
+    rowDataFormatter {
+      span: [
+        ['firstName','lastName']        
+      ]
+      
+      colSpan: ['firstName','lastName']
+    }
+    
+    GridColumn
+    StackedGridColumn
+    
+ 
+    [ wildcard search ] - across all columns        
+    ---------------------------------------------------------------------   
+    |    | First Name            |  Mobile      |  Birth Date           |
+    |    | Surname               |  Email       |  Age                  |
+    ---------------------------------------------------------------------
+    ===================================================================== 
+    [F]: | [ First Name        ] | [ Mobile   ] | [DATE-FORM] [DATE-TO] |
+           [ Last Name         ] | [ Email    ] |                       |
+    =====================================================================
+         | Manie                 |  Coetzee      |  77/05/05            |
+      >  | Coetzee               |  mc@bla.com   |  40                  |
+    ---------------------------------------------------------------------
+         |           |                             13 Pioneer Road      |
+         | [ADDRESS] |                             Durbanville          |
+         |           |                             7550                 |
+    ---------------------------------------------------------------------
+    EXPANDER
+    =====================================================================
+    \                                                                   \
+    \                                                                   \
+    \                                                                   \
+    \                                                                   \
+    =====================================================================    
+    -->    
+    
+    <div style="flex: 1 1 auto;">
+      <div style="display: flex; flex: 1 1 auto;">
+        <ng-container rowOutlet></ng-container>
+      </div>
+      <div style="flex: 1 1 auto;">
+        <ng-container expanderOutlet></ng-container>
+      </div>
+    </div>
     <ng-container>
       <data-cell *dataCellDef="let column; " [column]="column" [row]="row"></data-cell>
     </ng-container>
@@ -497,12 +555,21 @@ export class GridComponent<T> implements OnInit, AfterViewInit, OnDestroy, After
     this._headerRowOutlet.viewContainer.createEmbeddedView(this._headerRowDef.templateRef, {$implicit: this.model});
   }
 
-  gridModelChanged(){
+  gridModelChanged(event?: GridModelEvent){
+
     // always apply defaults (default data and header formatter if none specified)
     this.gridService.applyDefaults(this.model.columns);
 
     // first we do the diff to get the changes (if any)
-    const changes = this.columnsDiffer.diff(this.model.columns);
+    let changes = this.columnsDiffer.diff(this.model.columns);
+
+    //@todo - need a way to update columns - could basically just add
+    /*if (event && event.type == GridModelEventType.UPDATE){
+      // if this is an update
+      this.columnsDiffer.diff([]);
+      changes = this.columnsDiffer.diff(this.model.columns);
+      this.headerRow.clearCells();
+    }*/
 
     // tell header row to look at the changes to insert/update/remove where required
     this.headerRow.applyColumnChanges(changes);
@@ -559,8 +626,8 @@ export class GridComponent<T> implements OnInit, AfterViewInit, OnDestroy, After
   }
 
   private observeModel(){
-    this.modelSubscription = this.model._changes.subscribe((columns: GridColumn[])=>{
-      this.gridModelChanged();
+    this.modelSubscription = this.model._changes.subscribe((event: GridModelEvent)=>{
+      this.gridModelChanged(event);
     });
   }
 
@@ -588,11 +655,23 @@ export interface GridModelStyles {
   maxWidth?: string
 }
 
+export enum GridModelEventType {
+  ADD,
+  REMOVE,
+  UPDATE
+}
+
+export interface GridModelEvent {
+  type: GridModelEventType,
+  column?: GridColumn,
+  columns: GridColumn[]
+}
+
 export class GridModel {
   config: GridModelConfig;
   styles: GridModelStyles;
   columns: GridColumn[] = [];
-  _changes = new Subject<GridColumn[]>();
+  _changes = new Subject<GridModelEvent>();
 
   constructor(config: GridModelConfig = {}, styles: GridModelStyles = {}){
     this.config = {
@@ -610,47 +689,56 @@ export class GridModel {
   }
 
   addColumn(column: GridColumn){
+    column.model = this;
     this.columns.push(column);
-    this._changes.next(this.columns);
+    this.notifyChanges(GridModelEventType.ADD);
   }
 
-  /*changes() : Subject<GridColumn[]> {
-    return this._changes.debounceTime(10) as Subject<GridColumn[]>;
-  }*/
-
-  /*getColumnByKey(key: string){
+  getColumnByKey(key: string) : GridColumn {
     return _.find(this.columns, { config: {key: key}});
-  }*/
+  }
 
   insertColumn(column: GridColumn, index: number){
+    //column.model = this;
     this.columns.splice(index, 0, column);
-    this.notifyChanges();
+    this.notifyChanges(GridModelEventType.ADD);
   }
 
   removeColumn(column: GridColumn){
     this.columns = _.without(this.columns, column);
-    this.notifyChanges();
+    this.notifyChanges(GridModelEventType.REMOVE);
   }
 
   removeColumnByIndex(index: number){
     this.columns.splice(index, 1);
-    this.notifyChanges();
+    this.notifyChanges(GridModelEventType.REMOVE);
   }
 
   removeColumnsByKey(key: string){
     _.remove(this.columns, (column)=>{
       return column.config.key == key;
     });
-    this.notifyChanges();
+    this.notifyChanges(GridModelEventType.REMOVE);
   }
 
+  updateColumn(column: GridColumn){
+    let index = this.columns.indexOf(column);
+    if (index > -1){
+      this.columns[index] = column;
+    }
+    this.notifyChanges(GridModelEventType.UPDATE, column);
+  }
   removeAll(){
     this.columns = [];
-    this.notifyChanges();
+    this.notifyChanges(GridModelEventType.REMOVE);
   }
 
-  notifyChanges(){
-    this._changes.next(this.columns);
+  notifyChanges(type: GridModelEventType, column?: GridColumn){
+    this._changes.next({
+      type: type,
+      column: column,
+      columns: this.columns
+    });
   }
 }
 
@@ -681,9 +769,11 @@ export interface GridColumnStyle {
 }
 
 export class GridColumn {
+  model: GridModel;
   config: GridColumnConfig;
   styles: GridColumnStyle;
   options: any;
+  refresh: boolean = false;
 
   constructor(config: GridColumnConfig, styles: GridColumnStyle = {}, options: any = {}){
     this.config = {
@@ -718,12 +808,6 @@ export class GridColumn {
     }
 
     this.options = options;
-  }
-
-  show(){
-  }
-
-  hide(){
   }
 }
 
