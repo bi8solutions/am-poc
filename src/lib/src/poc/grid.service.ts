@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {GridColumn} from "./grid";
-import {DatePropertyFormatter, PropertyFormatter} from "./grid";
+import {GridDateFormatter, GridPropertyFormatter} from "./grid";
 
 import * as _ from 'lodash';
 
@@ -13,14 +13,14 @@ export class GridService {
     let dateCol = new GridColumn({
       type: 'date',
       key: 'date',
-      formatter: DatePropertyFormatter
+      formatter: GridDateFormatter
     },{
 
     },{
       dateFormat: 'fullDate'
     });
 
-    let textCol = new GridColumn({type: 'text', key: 'text', formatter: PropertyFormatter });
+    let textCol = new GridColumn({type: 'text', key: 'text', formatter: GridPropertyFormatter });
 
     this.setDefaultColumn(dateCol.config.type, dateCol);
     this.setDefaultColumn(textCol.config.type, textCol);

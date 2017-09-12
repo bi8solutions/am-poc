@@ -8,7 +8,14 @@ export {
   GridColumn,
   GridColumnConfig,
   GridColumnStyle,
-  ArrayDS
+  ArrayDS,
+
+  GridHeaderFormatter,
+  GridKeyHeaderFormatter,
+  GridDataFormatter,
+  GridPropertyFormatter,
+  GridDateFormatter,
+
 } from './src/poc/grid'
 
 export {

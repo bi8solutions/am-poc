@@ -36,15 +36,22 @@ import {
   HeaderRowOutlet,
   DataRowOutlet,
   RowOutlet,
-
   HeaderRowDef,
   HeaderRow,
   HeaderCellDef,
   HeaderCell,
-
   DataRow,
   CellOutlet,
-  DataCell, PropertyFormatter, DatePropertyFormatter, HeadingFormatter
+  DataCell,
+  DataRowDef,
+  DataCellDef,
+
+  GridDateFormatter,
+  GridPropertyFormatter,
+  GridDataFormatter,
+  GridKeyHeaderFormatter,
+  GridHeaderFormatter,
+  GridExpanderFormatter
 } from "./poc/grid";
 
 import {
@@ -78,9 +85,12 @@ import {GridService} from "./poc/grid.service";
       DataRowOutlet,
       RowOutlet,
 
+      DataRowDef,
       DataRow,
-      CellOutlet,
+      DataCellDef,
       DataCell,
+
+      CellOutlet,
 
       NestedPlaceholder,
       NestedChildPlaceholder,
@@ -88,7 +98,10 @@ import {GridService} from "./poc/grid.service";
       NestedChildDef,
       NestedComponent,
 
-      PropertyFormatter, DatePropertyFormatter, HeadingFormatter
+
+      GridKeyHeaderFormatter,
+      GridPropertyFormatter,
+      GridDateFormatter,
     ],
     declarations: [
       UnlessDirective,
@@ -107,12 +120,15 @@ import {GridService} from "./poc/grid.service";
       HeaderCellDef,
       HeaderCell,
 
+      DataRowDef,
+      DataRow,
+      DataCellDef,
+      DataCell,
+
       HeaderRowOutlet,
       DataRowOutlet,
       RowOutlet,
-      DataRow,
       CellOutlet,
-      DataCell,
 
       NestedPlaceholder,
       NestedChildPlaceholder,
@@ -120,7 +136,9 @@ import {GridService} from "./poc/grid.service";
       NestedChildDef,
       NestedComponent,
 
-      PropertyFormatter, DatePropertyFormatter, HeadingFormatter
+      GridKeyHeaderFormatter,
+      GridPropertyFormatter,
+      GridDateFormatter,
     ],
     imports: [
       CommonModule,
@@ -144,7 +162,11 @@ import {GridService} from "./poc/grid.service";
       MdMenuModule,
       MdListModule
     ],
-    entryComponents: [PropertyFormatter, DatePropertyFormatter, HeadingFormatter],
+    entryComponents: [
+      GridKeyHeaderFormatter,
+      GridPropertyFormatter,
+      GridDateFormatter
+    ],
     providers: [GridService]
 })
 export class PocModule {

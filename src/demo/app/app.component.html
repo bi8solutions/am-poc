@@ -1,13 +1,33 @@
 <div>
   <h2>Template Examples</h2>
 
-  <button (click)="addColumn()">Add</button>
-  <button (click)="insertColumn(1)">Insert (1)</button>
-  <button (click)="removeColumn(0)">Remove (0)</button>
+  <button (click)="addColumn()">Add Column</button>
+  <button (click)="insertColumn(1)">Insert Column (1)</button>
+  <button (click)="removeColumn(0)">Remove Column(0)</button>
+
+  <button (click)="addRow()">Add Row</button>
+  <button (click)="insertRow(1)">Insert Row (1)</button>
+  <button (click)="removeRow(0)">Remove Row (0)</button>
   <hr/>
 
-  <grid [model]="gridModel">
-    <ng-template #firstNameHeaderTemplate let-column="column">First Name  - {{column.config.key}} :) dddfdf</ng-template>
+  <grid [model]="gridModel" [dataSource]="arrayDS">
+    <ng-template #firstNameHeaderTemplate let-column="column"> (: First Name  - {{column.config.key}} :) </ng-template>
+    <ng-template #firstNameDataTemplate let-column="column" let-row="row">{{row.data.firstName}} - {{message}} - {{row.data.insertedColumn}}</ng-template>
+
+    <ng-template #expanderTemplate let-column="column" let-row="row">
+      <table>
+        <tr><th>First Name</th><td>{{row.data.firstName}}</td></tr>
+        <tr><th>Last Name</th><td>{{row.data.lastName}}</td></tr>
+        <tr><th>Mobile</th><td>{{row.data.mobile}}</td></tr>
+        <tr><th>Email</th><td>{{row.data.email}}</td></tr>
+      </table>
+    </ng-template>
+    <!--
+    1) Expander
+    2) Selector (make row selectable)
+    3) Sorting
+    4) Filtering
+    -->
   </grid>
 
   <!--<nested></nested>-->
