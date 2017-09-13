@@ -30,7 +30,8 @@
     <ng-template #alternativeFirstNameHeaderTemplate let-column="column"> Skuus, Pasop, Vockoff {{column.config.key}}</ng-template>
     <ng-template #firstNameDataTemplate let-column="column" let-row="row">{{row.data.firstName}} - {{message}} - {{row.data.insertedColumn}}</ng-template>
 
-    <ng-template #expanderTemplate let-column="column" let-row="row">
+    <ng-template #expanderTemplate let-row="row">
+      {{message}}
       <table>
         <tr><th>First Name</th><td>{{row.data.firstName}}</td></tr>
         <tr><th>Last Name</th><td>{{row.data.lastName}}</td></tr>
@@ -39,10 +40,43 @@
       </table>
     </ng-template>
     <!--
-    1) Expander -> most important
+    1) [done] Expander
     2) Selector (make row selectable)
     3) Sorting
     4) Filtering
+
+
+    In order for an item to be selected, it must have an id?
+
+    Ok, so what scenarious will I use the selector in.  First of all, I should have the ability to select on an id or the complete object itself.
+    We will probably do the id when.  For example, it would be nice to specify if a selection is persistent - stored in localStorage.
+
+    SelectionProvider (include a trackBy function) (add a storage function)
+      -> TrackBy function (for when the page is reloaded, we need to update the checkboxes tick/untick)
+      -> selectionChanges$ - event source for when there are changes
+      -> StorageProvider: localStorage / memory - if we store the selection in memory or in local storage
+        store(item)
+        load(item)
+      -> totalNumber: total number of items
+      -> selectionNumber: number of selections
+
+    show checkbox:
+      when selecting, we add an selection object to the arraylist
+      when de-selecting, we remove the object from the arraylist
+
+    GridSelectionEventType {
+      ADD,
+      REMOVE
+    }
+
+    GridSelectionEvent: {
+      type: add/remove
+      item: the item that was removed or added,
+      selection: all the items that is currently selected
+      total: 20
+      selected: 10
+    }
+
     -->
   </grid>
 

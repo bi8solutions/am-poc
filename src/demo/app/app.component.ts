@@ -44,7 +44,7 @@ export class AppComponent implements OnInit {
       dataTemplate: this.firstNameDataTemplate
     });
 
-    this.gridModel = new GridModel();
+    this.gridModel = new GridModel({showExpander: true, expanderTemplate: this.expanderTemplate});
     this.gridModel.addColumn(this.firstNameColumn);
     this.gridModel.addColumn(new GridColumn({key: 'lastName'}));
     this.gridModel.addColumn(new GridColumn({key: 'nickName'}));

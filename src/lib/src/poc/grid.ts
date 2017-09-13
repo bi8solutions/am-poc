@@ -139,14 +139,15 @@ export class HeaderCell implements OnInit, OnDestroy, AfterContentInit,  OnChang
   }
 }
 
+
 @Component({
   selector: 'header-row',
   inputs: ['model: model'],
   template: `
+    <div *ngIf="model.config.showExpander" class="am-header-expander-column"></div>
     <ng-container rowOutlet></ng-container>
     <ng-container>
       <header-cell *headerCellDef="let column;" [column]="column"></header-cell>
-      
       <!--<header-cell *headerCellDef="let column as column;" [column]="column"></header-cell>-->
     </ng-container>
   `,
@@ -240,6 +241,9 @@ export interface RowContext {
 
   // True if row has an odd-numbered index.
   odd?: boolean;
+
+  // if the detail expander is shown or not
+  expanded?: boolean;
 }
 
 @Directive({selector: '[dataRowDef]',})
@@ -364,10 +368,13 @@ export class DataCell implements OnInit, AfterContentInit {
     -->    
     
     <div style="flex: 1 1 auto;">
-      <div style="display: flex; flex: 1 1 auto;">
+      <div style="display: flex; flex: 1 1 auto;" [ngClass]="{'am-expanded-row': row.expanded}">
+        <div *ngIf="row.model.config.showExpander" class="am-header-expander-column">
+          <md-icon (click)="toggleExpander()">{{expanderIcon}}</md-icon>
+        </div>
         <ng-container rowOutlet></ng-container>
       </div>
-      <div style="flex: 1 1 auto;">
+      <div style="flex: 1 1 auto;" [ngClass]="{'am-expander-row': row.expanded}">
         <ng-container expanderOutlet></ng-container>
       </div>
     </div>
@@ -387,8 +394,11 @@ export class DataRow implements AfterContentInit {
   @ViewChild(RowOutlet) _rowOutlet: RowOutlet;
   @ViewChild(DataCellDef) _dataCellDef: DataCellDef;
   @ViewChildren(DataCell) dataCells : QueryList<DataCell>;
+  @ViewChild(ExpanderOutlet) _expanderOutlet: ExpanderOutlet;
 
   row: RowContext;
+
+  expanderIcon: string = 'keyboard_arrow_right';
 
   constructor(protected _changeDetectorRef: ChangeDetectorRef){
   }
@@ -435,6 +445,26 @@ export class DataRow implements AfterContentInit {
 
     // then tell Angular to do it's checks
     this._changeDetectorRef.markForCheck();
+  }
+
+  toggleExpander(){
+    if (this.row.expanded){
+      this.row.expanded = false;
+      this._expanderOutlet.viewContainer.clear();
+      this.expanderIcon = 'keyboard_arrow_right';
+
+    } else {
+      this.row.expanded = true;
+      this._expanderOutlet.viewContainer.clear();
+      this.expanderIcon = 'keyboard_arrow_down';
+
+      if (this.row.model.config.expanderTemplate){
+        this._expanderOutlet.viewContainer.createEmbeddedView(this.row.model.config.expanderTemplate, {row: this.row});
+      }
+    }
+
+    // I should store the property on the actual row context.  Or I have a seperate list where I maintain what is expanded.  I Basically want
+    // to hide other expanders when this ons is activated.  I wonder if the best way is to
   }
 }
 
@@ -593,7 +623,8 @@ export class GridComponent<T> implements OnInit, AfterViewInit, OnDestroy, After
       //////////////console.log("adding/inserting new row", record);
       let rowContext: RowContext = {
         data: record.item,
-        model: this.model
+        model: this.model,
+        expanded: false
       };
 
       this._dataRowOutlet.viewContainer.createEmbeddedView(this._dataRowDef.templateRef, {$implicit: rowContext});
@@ -643,6 +674,7 @@ export class GridComponent<T> implements OnInit, AfterViewInit, OnDestroy, After
 
 export interface GridModelConfig {
   selection?: boolean,
+  showExpander?: boolean,
   expanderFormatter?: Type<GridExpanderFormatter>;
   expanderTemplate?: TemplateRef<any>;
 }
@@ -676,7 +708,9 @@ export class GridModel {
   constructor(config: GridModelConfig = {}, styles: GridModelStyles = {}){
     this.config = {
       selection: !_.isNil(config.selection) ? config.selection : false,
-
+      showExpander: !_.isNil(config.showExpander) ? config.showExpander : false,
+      expanderFormatter: !_.isNil(config.expanderFormatter) ? config.expanderFormatter : null,
+      expanderTemplate: !_.isNil(config.expanderTemplate) ? config.expanderTemplate : null
     };
 
     this.styles = {

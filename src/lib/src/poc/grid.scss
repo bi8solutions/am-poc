@@ -31,7 +31,7 @@
   border-bottom-style: solid;
   align-items: center;
   min-height: 48px;
-  padding: 0 24px;
+  padding: 0 5px;
   border-bottom-color: rgba(0,0,0,.12);
 }
 
@@ -44,6 +44,27 @@
   padding: 5px;
 }
 
+.am-header-expander-column {
+  width: 24px;
+  height: 24px;
+  //background: gainsboro;
+}
+
+.am-header-expander-column md-icon {
+  cursor: pointer;
+}
+
+.am-expander-row {
+  font-size: 12px;
+  padding: 5px;
+  border: dashed thin gainsboro;
+  background-color: #f9f9f9;
+}
+
+.am-expanded-row {
+  background-color: aliceblue;
+}
+
 //-----[ DATA ]-----
 
 .am-data-row {
@@ -52,7 +73,7 @@
   border-bottom-style: solid;
   align-items: center;
   min-height: 48px;
-  padding: 0 24px;
+  padding: 0 5px;
   border-bottom-color: rgba(0,0,0,.12);
 }
 
