@@ -25,7 +25,7 @@
   </div>
   <hr/>
 
-  <grid [model]="gridModel" [dataSource]="arrayDS">
+  <am-data-grid [model]="gridModel" [dataSource]="arrayDS">
     <ng-template #firstNameHeaderTemplate let-column="column"> (: First Name  - {{column.config.key}} :) </ng-template>
     <ng-template #alternativeFirstNameHeaderTemplate let-column="column"> Skuus, Pasop, Vockoff {{column.config.key}}</ng-template>
     <ng-template #firstNameDataTemplate let-column="column" let-row="row">{{row.data.firstName}} - {{message}} - {{row.data.insertedColumn}}</ng-template>
@@ -78,7 +78,7 @@
     }
 
     -->
-  </grid>
+  </am-data-grid>
 
   <!--<nested></nested>-->
   <!--<template-example></template-example>-->

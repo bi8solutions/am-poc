@@ -1,6 +1,6 @@
 import {
   AfterContentChecked, AfterContentInit, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ComponentFactoryResolver, ContentChild,
-  Directive, ElementRef, Input, IterableChangeRecord, IterableChanges, IterableDiffer,
+  Directive, ElementRef, Injectable, Input, IterableChangeRecord, IterableChanges, IterableDiffer,
   IterableDiffers,
   OnChanges, OnDestroy,
   OnInit, QueryList, Renderer2, SimpleChanges,
@@ -11,13 +11,13 @@ import {
 import {Subject} from "rxjs/Subject";
 
 import * as _ from 'lodash';
-import {GridService} from "./grid.service";
 import {Subscription} from "rxjs/Subscription";
 import {CollectionViewer, DataSource} from "@angular/cdk/collections";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {MdPaginator} from "@angular/material";
 import {Observable} from "rxjs/Observable";
 import {takeUntil} from "@angular/cdk/rxjs";
+import {GridService} from "./grid.service";
 
 
 //=====[ UTILS ]======================================================================================================================================
@@ -321,6 +321,10 @@ export class DataCell implements OnInit, AfterContentInit {
   }
 }
 
+const EXPANDER_ICON_CLOSED = 'keyboard_arrow_right';
+const EXPANDER_ICON_OPEN = 'keyboard_arrow_down';
+
+
 @Component({
   selector: 'data-row',
   inputs: ['row: row'],
@@ -398,7 +402,7 @@ export class DataRow implements AfterContentInit {
 
   row: RowContext;
 
-  expanderIcon: string = 'keyboard_arrow_right';
+  expanderIcon: string = EXPANDER_ICON_CLOSED;
 
   constructor(protected _changeDetectorRef: ChangeDetectorRef){
   }
@@ -448,34 +452,31 @@ export class DataRow implements AfterContentInit {
   }
 
   toggleExpander(){
+    this._expanderOutlet.viewContainer.clear();
+
     if (this.row.expanded){
       this.row.expanded = false;
-      this._expanderOutlet.viewContainer.clear();
-      this.expanderIcon = 'keyboard_arrow_right';
+      this.expanderIcon = EXPANDER_ICON_CLOSED;
 
     } else {
       this.row.expanded = true;
-      this._expanderOutlet.viewContainer.clear();
-      this.expanderIcon = 'keyboard_arrow_down';
+      this.expanderIcon = EXPANDER_ICON_OPEN;
 
       if (this.row.model.config.expanderTemplate){
         this._expanderOutlet.viewContainer.createEmbeddedView(this.row.model.config.expanderTemplate, {row: this.row});
       }
     }
-
-    // I should store the property on the actual row context.  Or I have a seperate list where I maintain what is expanded.  I Basically want
-    // to hide other expanders when this ons is activated.  I wonder if the best way is to
   }
 }
 
+//=====[ GRID COMPONENT ]=============================================================================================================================
+
 @Component({
-  selector: 'grid',
-  styleUrls: ['./grid.scss'],
+  selector: 'am-data-grid',
   template: `
     <div class="am-grid">
       <ng-container headerRowOutlet></ng-container>
       <ng-container dataRowOutlet></ng-container>
-      
       <ng-container>
         <header-row *headerRowDef="let model" [model]="model"></header-row>
         <data-row *dataRowDef="let row" [row]="row"></data-row>    
@@ -671,6 +672,8 @@ export class GridComponent<T> implements OnInit, AfterViewInit, OnDestroy, After
     }
   }
 }
+
+//=====[ GRID MODEL ]=================================================================================================================================
 
 export interface GridModelConfig {
   selection?: boolean,
@@ -955,3 +958,5 @@ export class ArrayDS extends DataSource<any[]> {
     this.reload();
   }
 }
+
+

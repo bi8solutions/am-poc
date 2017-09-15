@@ -23,6 +23,7 @@ import {
   MdSidenavModule,
   MdToolbarModule
 } from "@angular/material";
+
 import {
   MessageComponent,
   MessageDirective,
@@ -47,13 +48,18 @@ import {
   DataRowDef,
   DataCellDef,
 
+
   GridDateFormatter,
   GridPropertyFormatter,
   GridDataFormatter,
   GridKeyHeaderFormatter,
   GridHeaderFormatter,
-  GridExpanderFormatter
+  GridExpanderFormatter,
 } from "./poc/grid";
+
+import {
+  GridService
+} from "./poc/grid.service"
 
 import {
   NestedPlaceholder,
@@ -62,7 +68,7 @@ import {
   NestedChildDef,
   NestedComponent
 } from './poc/nested'
-import {GridService} from "./poc/grid.service";
+
 
 @NgModule({
     exports: [
@@ -76,23 +82,24 @@ import {GridService} from "./poc/grid.service";
       MessageDirective,
       MessageComponent,
 
+
       GridComponent,
       HeaderRowDef,
       HeaderRow,
       HeaderCellDef,
       HeaderCell,
-
       HeaderRowOutlet,
       DataRowOutlet,
       RowOutlet,
       ExpanderOutlet,
-
       DataRowDef,
       DataRow,
       DataCellDef,
       DataCell,
-
       CellOutlet,
+      GridKeyHeaderFormatter,
+      GridPropertyFormatter,
+      GridDateFormatter,
 
       NestedPlaceholder,
       NestedChildPlaceholder,
